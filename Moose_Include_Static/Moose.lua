@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+env.info( '*** MOOSE GITHUB Commit Hash ID: 2024-09-01T15:37:31+02:00-6afb68390bc06c8f9f75001616833b09209ffc70 ***' )
+=======
 env.info( '*** MOOSE GITHUB Commit Hash ID: 2024-12-31T15:35:23+01:00-df102fba6c434168d11789749aebd8d703ff7e50 ***' )
+>>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 
 -- Automatic dynamic loading of development files, if they exists.
 -- Try to load Moose as individual script files from <DcsInstallDir\Script\Moose
@@ -71702,8 +71706,11 @@ end
 --
 -- ### Authors: **applevangelist**, **FlightControl**
 --
-
+<<<<<<< HEAD
+-- Last Update: Dec 2023
+=======
 -- Last Update: Dec 2024
+>>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 --
 -- ===
 --
@@ -71830,7 +71837,11 @@ function SEAD:New( SEADGroupPrefixes, Padding )
   self:AddTransition("*",             "ManageEvasion",                "*")
   self:AddTransition("*",             "CalculateHitZone",             "*")
   
+<<<<<<< HEAD
+  self:I("*** SEAD - Started Version 0.4.6")
+=======
   self:I("*** SEAD - Started Version 0.4.9")
+>>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
   return self
 end
 
@@ -72144,6 +72155,9 @@ function SEAD:HandleEventShot( EventData )
   local SEADUnit = EventData.IniDCSUnit
   local SEADUnitName = EventData.IniDCSUnitName
   local SEADWeapon = EventData.Weapon -- Identify the weapon fired
+<<<<<<< HEAD
+  local SEADWeaponName = EventData.WeaponName -- return weapon type
+=======
   local SEADWeaponName = EventData.WeaponName or "None" -- return weapon type
   
   if self:_CheckHarms(SEADWeaponName) then
@@ -72160,6 +72174,7 @@ function SEAD:HandleEventShot( EventData )
     local WeaponWrapper = WEAPON:New(EventData.Weapon) -- Wrapper.Weapon#WEAPON
     
     self:T( "*** SEAD - Missile Launched = " .. SEADWeaponName)
+>>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 
   local WeaponWrapper = WEAPON:New(EventData.Weapon)
   --local SEADWeaponSpeed = WeaponWrapper:GetSpeed() -- mps
@@ -148472,7 +148487,11 @@ CTLD.UnitTypeCapabilities = {
 
 --- CTLD class version.
 -- @field #string version
+<<<<<<< HEAD
+CTLD.version="1.1.15"
+=======
 CTLD.version="1.1.22"
+>>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 
 --- Instantiate a new CTLD.
 -- @param #CTLD self
