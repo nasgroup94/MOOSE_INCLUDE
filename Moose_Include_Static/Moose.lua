@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 env.info( '*** MOOSE GITHUB Commit Hash ID: 2024-09-01T15:37:31+02:00-6afb68390bc06c8f9f75001616833b09209ffc70 ***' )
-=======
-env.info( '*** MOOSE GITHUB Commit Hash ID: 2024-12-31T15:35:23+01:00-df102fba6c434168d11789749aebd8d703ff7e50 ***' )
->>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 
 -- Automatic dynamic loading of development files, if they exists.
 -- Try to load Moose as individual script files from <DcsInstallDir\Script\Moose
@@ -71706,11 +71702,7 @@ end
 --
 -- ### Authors: **applevangelist**, **FlightControl**
 --
-<<<<<<< HEAD
 -- Last Update: Dec 2023
-=======
--- Last Update: Dec 2024
->>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 --
 -- ===
 --
@@ -71760,7 +71752,6 @@ SEAD = {
   ["AGM_122"] = "AGM_122",
   ["AGM_84"] = "AGM_84",
   ["AGM_45"] = "AGM_45",
-  ["AGM_65"] = "AGM_65",
   ["ALARM"] = "ALARM",
   ["LD-10"] = "LD-10",
   ["X_58"] = "X_58",
@@ -71780,7 +71771,6 @@ SEAD = {
   -- km and mach
   ["AGM_88"] = { 150, 3},
   ["AGM_45"] = { 12, 2},
-  ["AGM_65"] = { 16, 0.9},
   ["AGM_122"] = { 16.5, 2.3},
   ["AGM_84"] = { 280, 0.8},
   ["ALARM"] = { 45, 2},
@@ -71837,11 +71827,7 @@ function SEAD:New( SEADGroupPrefixes, Padding )
   self:AddTransition("*",             "ManageEvasion",                "*")
   self:AddTransition("*",             "CalculateHitZone",             "*")
   
-<<<<<<< HEAD
   self:I("*** SEAD - Started Version 0.4.6")
-=======
-  self:I("*** SEAD - Started Version 0.4.9")
->>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
   return self
 end
 
@@ -72155,26 +72141,7 @@ function SEAD:HandleEventShot( EventData )
   local SEADUnit = EventData.IniDCSUnit
   local SEADUnitName = EventData.IniDCSUnitName
   local SEADWeapon = EventData.Weapon -- Identify the weapon fired
-<<<<<<< HEAD
   local SEADWeaponName = EventData.WeaponName -- return weapon type
-=======
-  local SEADWeaponName = EventData.WeaponName or "None" -- return weapon type
-  
-  if self:_CheckHarms(SEADWeaponName) then
-    --UTILS.PrintTableToLog(EventData)
-    local SEADPlane = EventData.IniUnit -- Wrapper.Unit#UNIT
-    
-    if not SEADPlane then return self end -- case IniUnit is empty
-    
-    local SEADGroup = EventData.IniGroup -- Wrapper.Group#GROUP
-    local SEADPlanePos = SEADPlane:GetCoordinate() -- Core.Point#COORDINATE
-    local SEADUnit = EventData.IniDCSUnit
-    local SEADUnitName = EventData.IniDCSUnitName
-  
-    local WeaponWrapper = WEAPON:New(EventData.Weapon) -- Wrapper.Weapon#WEAPON
-    
-    self:T( "*** SEAD - Missile Launched = " .. SEADWeaponName)
->>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 
   local WeaponWrapper = WEAPON:New(EventData.Weapon)
   --local SEADWeaponSpeed = WeaponWrapper:GetSpeed() -- mps
@@ -72190,7 +72157,7 @@ function SEAD:HandleEventShot( EventData )
     if not _target or self.debug  then -- AGM-88 or 154 w/o target data
       self:E("***** SEAD - No target data for " .. (SEADWeaponName or "None"))
       if string.find(SEADWeaponName,"AGM_88",1,true) or string.find(SEADWeaponName,"AGM_154",1,true) then
-        self:T("**** Tracking AGM-88/154 with no target data.")
+        self:I("**** Tracking AGM-88/154 with no target data.")
         local pos0 = SEADPlane:GetCoordinate()
         local fheight = SEADPlane:GetHeight()
         self:__CalculateHitZone(20,SEADWeapon,pos0,fheight,SEADGroup,SEADWeaponName)
@@ -141741,8 +141708,6 @@ function RECOVERYTANKER:onafterStart(From, Event, To)
 
   -- Init status updates in 10 seconds.
   self:__Status(10)
-  
-  return self
 end
 
 
@@ -143425,8 +143390,6 @@ function RESCUEHELO:onafterStart(From, Event, To)
   
   -- Init status check
   self:__Status(1)
-  
-  return self
 end
 
 --- On after Status event. Checks player status.
@@ -148487,11 +148450,7 @@ CTLD.UnitTypeCapabilities = {
 
 --- CTLD class version.
 -- @field #string version
-<<<<<<< HEAD
 CTLD.version="1.1.15"
-=======
-CTLD.version="1.1.22"
->>>>>>> 5d36897e24bf92626b77c4dfb1f376c157923e55
 
 --- Instantiate a new CTLD.
 -- @param #CTLD self
@@ -149810,6 +149769,27 @@ function CTLD:_GetCrates(Group, Unit, Cargo, number, drop, pack)
         row = 1
         startpos:Translate(6,heading,nil,true)
       end
+      --[[
+      local initialSpacing = IsHerc and 16 or (capabilities.length+2) -- initial spacing of the first crates
+      local crateSpacing = 4 -- further spacing of remaining crates
+      local lateralSpacing = 4 -- lateral spacing of crates
+      local nrSideBySideCrates = 4 -- number of crates that are placed side-by-side
+
+      if cratesneeded == 1 then
+        -- single crate needed spawns straight ahead
+        cratedistance = initialSpacing
+        rheading = math.fmod((heading + addon), 360)
+      else
+        --if (i - 1) % nrSideBySideCrates == 0 then
+            cratedistance = i == 1 and initialSpacing or (cratedistance + crateSpacing)
+            angleOffNose = math.ceil(math.deg(math.atan(lateralSpacing / cratedistance)))
+            self:I("angleOffNose = "..angleOffNose)
+            rheading = heading + addon - angleOffNose
+        --else
+          --  rheading = heading + addon + angleOffNose
+        --end
+      end
+      --]]
     end
     
     --local cratevec2 = cratecoord:GetVec2()
@@ -151372,7 +151352,7 @@ end
 -- @param #number PerTroopMass Mass in kg of each soldier
 -- @param #number Stock Number of groups in stock. Nil for unlimited.
 -- @param #string SubCategory Name of sub-category (optional).
-function CTLD:AddTroopsCargo(Name,Templates,Type,NoTroops,PerTroopMass,Stock,SubCategory) 
+function CTLD:AddTroopsCargo(Name,Templates,Type,NoTroops,PerTroopMass,Stock,SubCategory)
   self:T(self.lid .. " AddTroopsCargo")
   self:T({Name,Templates,Type,NoTroops,PerTroopMass,Stock})
   if not self:_CheckTemplates(Templates) then
@@ -151383,7 +151363,6 @@ function CTLD:AddTroopsCargo(Name,Templates,Type,NoTroops,PerTroopMass,Stock,Sub
   -- Troops are directly loadable
   local cargo = CTLD_CARGO:New(self.CargoCounter,Name,Templates,Type,false,true,NoTroops,nil,nil,PerTroopMass,Stock, SubCategory)
   table.insert(self.Cargo_Troops,cargo)
-  if SubCategory and self.usesubcats ~= true then self.usesubcats=true end
   return self
 end
 
@@ -151420,7 +151399,6 @@ function CTLD:AddCratesCargo(Name,Templates,Type,NoCrates,PerCrateMass,Stock,Sub
     cargo:SetStaticTypeAndShape(Category,TypeName,ShapeName)
   end
   table.insert(self.Cargo_Crates,cargo)
-  if SubCategory and self.usesubcats ~= true then self.usesubcats=true end
   return self
 end
 
@@ -151447,7 +151425,6 @@ function CTLD:AddStaticsCargo(Name,Mass,Stock,SubCategory,DontShowInMenu,Locatio
   local cargo = CTLD_CARGO:New(self.CargoCounter,Name,template,type,false,false,1,nil,nil,Mass,Stock,SubCategory,DontShowInMenu,Location)
   cargo:SetStaticResourceMap(ResourceMap)
   table.insert(self.Cargo_Statics,cargo)
-  if SubCategory and self.usesubcats ~= true then self.usesubcats=true end
   return cargo
 end
 
@@ -153192,7 +153169,7 @@ end
     
     local statics = nil
     local statics = {}
-    self:T(self.lid.."Building Statics Table for Saving")
+    self:T(self.lid.."Bulding Statics Table for Saving")
     for _,_cargo in pairs (stcstable) do     
       local cargo = _cargo -- #CTLD_CARGO
       local object = cargo:GetPositionable() -- Wrapper.Static#STATIC
@@ -153227,7 +153204,7 @@ end
     
       
     --local data = "LoadedData = {\n"
-    local data = "Group,x,y,z,CargoName,CargoTemplates,CargoType,CratesNeeded,CrateMass,Structure,StaticCategory,StaticType,StaticShape\n"
+    local data = "Group,x,y,z,CargoName,CargoTemplates,CargoType,CratesNeeded,CrateMass,Structure\n"
     local n = 0
     for _,_grp in pairs(grouptable) do
       local group = _grp -- Wrapper.Group#GROUP
@@ -153254,7 +153231,6 @@ end
           local cgotype = cargo.CargoType
           local cgoneed = cargo.CratesNeeded
           local cgomass = cargo.PerCrateMass
-          local scat,stype,sshape = cargo:GetStaticTypeAndShape()
           local structure = UTILS.GetCountPerTypeName(group)
           local strucdata =  ""
           for typen,anzahl in pairs (structure) do
@@ -153271,8 +153247,8 @@ end
           end
           
           local location = group:GetVec3()
-          local txt = string.format("%s,%d,%d,%d,%s,%s,%s,%d,%d,%s,%s,%s,%s\n"
-              ,template,location.x,location.y,location.z,cgoname,cgotemp,cgotype,cgoneed,cgomass,strucdata,scat,stype,sshape or "none")             
+          local txt = string.format("%s,%d,%d,%d,%s,%s,%s,%d,%d,%s\n"
+              ,template,location.x,location.y,location.z,cgoname,cgotemp,cgotype,cgoneed,cgomass,strucdata)
           data = data .. txt
         end
       end
@@ -153297,9 +153273,8 @@ end
       local cgomass = object.PerCrateMass
       local crateobj = object.Positionable
       local location = crateobj:GetVec3()
-      local scat,stype,sshape = object:GetStaticTypeAndShape()
-      local txt = string.format("%s,%d,%d,%d,%s,%s,%s,%d,%d,'none',%s,%s,%s\n"
-          ,"STATIC",location.x,location.y,location.z,cgoname,cgotemp,cgotype,cgoneed,cgomass,scat,stype,sshape or "none")
+      local txt = string.format("%s,%d,%d,%d,%s,%s,%s,%d,%d\n"
+          ,"STATIC",location.x,location.y,location.z,cgoname,cgotemp,cgotype,cgoneed,cgomass)
       data = data .. txt
     end
     
@@ -153428,50 +153403,47 @@ end
     
     for _id,_entry in pairs (loadeddata) do
       local dataset = UTILS.Split(_entry,",")     
-      -- 1=Group,2=x,3=y,4=z,5=CargoName,6=CargoTemplates,7=CargoType,8=CratesNeeded,9=CrateMass,10=Structure,11=StaticCategory,12=StaticType,13=StaticShape
+      -- 1=Group,2=x,3=y,4=z,5=CargoName,6=CargoTemplates,7=CargoType,8=CratesNeeded,9=CrateMass,10=Structure
       local groupname = dataset[1]
       local vec2 = {}
       vec2.x = tonumber(dataset[2])
       vec2.y = tonumber(dataset[4])
       local cargoname = dataset[5]
-      local cargotemplates = dataset[6]
       local cargotype = dataset[7]
-      local size = tonumber(dataset[8])
-      local mass = tonumber(dataset[9])
-      local StaticCategory = dataset[11]
-      local StaticType = dataset[12]
-      local StaticShape = dataset[13]
       if type(groupname) == "string" and groupname ~= "STATIC" then
+        local cargotemplates = dataset[6]
         cargotemplates = string.gsub(cargotemplates,"{","")
         cargotemplates = string.gsub(cargotemplates,"}","")
         cargotemplates = UTILS.Split(cargotemplates,";")
+        local size = tonumber(dataset[8])
+        local mass = tonumber(dataset[9])
         local structure = nil
-        if dataset[10] and dataset[10] ~= "none" then
+        if dataset[10] then
           structure = dataset[10]
           structure = string.gsub(structure,",","")
         end
         -- inject at Vec2
         local dropzone = ZONE_RADIUS:New("DropZone",vec2,20)
         if cargotype == CTLD_CARGO.Enum.VEHICLE or cargotype == CTLD_CARGO.Enum.FOB then
-          local injectvehicle = CTLD_CARGO:New(nil,cargoname,cargotemplates,cargotype,true,true,size,nil,true,mass)
-          injectvehicle:SetStaticTypeAndShape(StaticCategory,StaticType,StaticShape)      
+          local injectvehicle = CTLD_CARGO:New(nil,cargoname,cargotemplates,cargotype,true,true,size,nil,true,mass)      
           self:InjectVehicles(dropzone,injectvehicle,self.surfacetypes,self.useprecisecoordloads,structure)
         elseif cargotype == CTLD_CARGO.Enum.TROOPS or cargotype == CTLD_CARGO.Enum.ENGINEERS then
           local injecttroops = CTLD_CARGO:New(nil,cargoname,cargotemplates,cargotype,true,true,size,nil,true,mass)      
           self:InjectTroops(dropzone,injecttroops,self.surfacetypes,self.useprecisecoordloads,structure)
         end
       elseif (type(groupname) == "string" and groupname == "STATIC") or cargotype == CTLD_CARGO.Enum.REPAIR then
+        local cargotemplates = dataset[6]
+        local size = tonumber(dataset[8])
+        local mass = tonumber(dataset[9])
         local dropzone = ZONE_RADIUS:New("DropZone",vec2,20)
         local injectstatic = nil
         if cargotype == CTLD_CARGO.Enum.VEHICLE or cargotype == CTLD_CARGO.Enum.FOB then
           cargotemplates = string.gsub(cargotemplates,"{","")
           cargotemplates = string.gsub(cargotemplates,"}","")
           cargotemplates = UTILS.Split(cargotemplates,";")
-          injectstatic = CTLD_CARGO:New(nil,cargoname,cargotemplates,cargotype,true,true,size,nil,true,mass) 
-          injectstatic:SetStaticTypeAndShape(StaticCategory,StaticType,StaticShape)     
+          injectstatic = CTLD_CARGO:New(nil,cargoname,cargotemplates,cargotype,true,true,size,nil,true,mass)      
         elseif cargotype == CTLD_CARGO.Enum.STATIC or cargotype == CTLD_CARGO.Enum.REPAIR then
           injectstatic = CTLD_CARGO:New(nil,cargoname,cargotemplates,cargotype,true,true,size,nil,true,mass)
-          injectstatic:SetStaticTypeAndShape(StaticCategory,StaticType,StaticShape)
           local map=cargotype:GetStaticResourceMap()
           injectstatic:SetStaticResourceMap(map) 
         end
